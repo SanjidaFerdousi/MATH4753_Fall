@@ -1,0 +1,96 @@
+---
+title: "User Guideline"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{User Guideline}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(MATH4753SF23)
+```
+
+# Functions
+## Function 1 (myboot2)
+"myboot2" function is designed for bootstrapping to estimate the distribution of a statistic (like the mean, median, variance, etc.) by resampling with replacement from a data sample. This function is particularly useful for constructing confidence intervals and understanding the variability of the statistic. The function resamples the original data (x) "iter" times with replacement and creates a matrix of resampled data. Then it applies the mentioned statistic function (fun) to each resampled dataset and finally creates a vector of bootstrap statistics (xstat).
+The function will generate a histogram of the bootstrap statistics with the original statistic value from the data (pte), and the lower and upper bounds of the confidence interval. It will also return the confidence interval, the function used for the statistic, the original sample, and the vector of bootstrap statistics.
+
+```{r,fig.height=6, fig.width=8}
+set.seed(123)
+sample_data <- runif(100)  
+myboot2(x=sample_data, fun="median")$ci
+```
+
+The confidence interval for the median is 0.4117616 and 0.5941420 which suggests that the true median of the population from which the sample was drawn is likely to lie within this interval with the specified confidence level.
+
+## Function 2 (myci)
+"myci" function is designed to calculate the confidence interval for the mean of a given numeric vector. It estimate the range within which the true mean of the population from which the sample is drawn is likely to lie, with a specified level of confidence. To process this, we will need a numeric vector and the significance level.
+The function first checks if the input x is a numeric vector. If not, it stops and returns an error message.Then it will calculate the sample size (n), the sample mean (mean_x), and the standard error of the mean (se) to determine the lower and upper critical values from the t-distribution (t_lower and t_upper) for the specified alpha level. Lastly, the function will return a vector containing the lower and upper bounds of the confidence interval.
+
+```{r}
+sample_data <- c(20, 22, 25, 24, 23, 26, 28, 30)
+myci(sample_data, 0.01)  
+```
+
+For sample data ranging from 20 to 30, the confidence interval for the mean is 20.74084 and 28.75916, indicating the true mean of the population is likely to be within this range with 99% confidence.
+
+## Function 3 (mycltp)
+The "mycltp" function is depicted to demonstrate the Central Limit Theorem (CLT) using a Poisson distribution. The CLT states that the sampling distribution of the sample means approaches a normal distribution as the sample size gets larger, regardless of the shape of the population distribution. To process this, we will need a sample size, the number of iterations, the parameter for the Poisson distribution. This function will show how sample means from a non-normal distribution tend to form a normal distribution as the number of samples increases.
+The function will generate a large number of samples from a Poisson distribution with parameter lambda, then will calculate the mean of each sample. For visualization it will create a histogram (to illustrate the CLT), a bar plot (relative frequencies of the sampled values) and a plot of the probability function for the Poisson distribution.
+```{r,fig.height=6, fig.width=8}
+mycltp(n=5, iter=5000, lambda=3)
+```
+
+Reflecting CLT, shows sample means approaching a normal distribution.
+
+## Function 4 (myhyper)
+"myhyper" function is prompted to simulate and analyze the hypergeometric distribution to know the numbers of successes occur when sampling from such a population. The hypergeometric distribution is used for sampling without replacement from a finite population consisting of two types of items, often referred to as "successes" and "failures". To process this, we will need number of iterations, total number of items in the population, number of "success" items in the population and sample size.
+Firstly, the function creates a matrix (sam.mat) to hold the samples across all iterations, initially filled with NAs. For each iteration, it samples n items from the population without replacement, then will calculate the successes (succ) for each sample. The function then creates a table (succ.tab) of the frequencies of the different numbers of successes observed across all iterations. It will return a bar plot of the proportions of each number of successes and the proportions of each number of successes as a fraction of the total iterations.
+
+```{r,fig.height=6, fig.width=8}
+myhyper(iter = 200, N = 50, r = 25, n = 10)
+```
+
+
+## Function 5 (mymlnorm)
+"mymlnorm" function performs Maximum Likelihood Estimation (MLE) for normal distributions to estimate the statistical parameters of a model. To perform this function, we require a numeric vector of the sample data, a numeric vector of values for the mean, a numeric vector of values for the standard deviation and if additional arguments required.
+
+Firstly, the function creates a grid of mean and standard devieation to test. For each combination of the parameter, it calculates the log-likelihood of the sample data given these parameters and then finds the combination of $\mu$ and $\sigma$ that maximizes this likelihood. The function returns a contour plot showing the likelihood surface, with special lines for the theoretical mean and standard deviation based on the sample data and a list including the original sample data vector, the coordinates of the maximum likelihood estimates and the maximum value of the likelihood function.
+```{r,fig.height=6, fig.width=8}
+mymlnorm(x=c(20, 22, 25, 24, 23, 26, 28),
+         mu=seq(20, 28, length=500),
+         sig=seq(1, 5, length=500),
+         lwd=2, labcex=1)
+```
+
+Maximum likelihood value of approximately 9.178953e-08. The contour plot visualize the likelihood under a normal distribution.
+
+## Function (dataset)
+The package also contains a "fire" data taken from the book table 10.10 representing the data set collected concerning home damage from fire.
+```{r}
+fire
+```
+
+## Funtion misc
+The package also contains three simple function "myfun", "myncurve", "Quadmodel" to demonstrate the basic mathematical operations to more complex statistical visualizations.
+"myfun" function used for simple mathematical transformations of data to compute and return a vector of squared values plus 10.
+"myncurve" function used to plot a normal distribution curve and highlight the area under the curve up to a specified limit for visualizing normal distributions and understanding probabilities associated with specific intervals.
+"quad" function used to compute values based on a quadratic model for curve fitting, trend analysis, or other situations where quadratic relationships are required.
+
+```{r,fig.height=6, fig.width=8}
+f = fire
+myfun(f[2])
+myncurve(mu = 0, sigma = 1, a = 1.5)
+quad(f[2])
+```
+
+
+
